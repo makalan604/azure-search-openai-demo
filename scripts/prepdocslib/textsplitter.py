@@ -8,10 +8,10 @@ class SplitPage:
     A section of a page that has been split into a smaller chunk.
     """
 
-    def __init__(self, page_num: int, text: str):
+    def __init__(self, page_num: int, text: str, filename:str):
         self.page_num = page_num
         self.text = text
-
+        self.filename = filename
 
 class TextSplitter:
     """
@@ -26,7 +26,7 @@ class TextSplitter:
         self.section_overlap = 100
         self.verbose = verbose
 
-    def split_pages(self, pages: List[Page]) -> Generator[SplitPage, None, None]:
+    def split_pages(self, pages: List[Page], filename) -> Generator[SplitPage, None, None]:
         def find_page(offset):
             num_pages = len(pages)
             for i in range(num_pages - 1):
@@ -75,7 +75,7 @@ class TextSplitter:
                 start += 1
 
             section_text = all_text[start:end]
-            yield SplitPage(page_num=find_page(start), text=section_text)
+            yield SplitPage(page_num=find_page(start), text=section_text,filename=filename)
 
             last_table_start = section_text.rfind("<table")
             if last_table_start > 2 * self.sentence_search_limit and last_table_start > section_text.rfind("</table"):
@@ -91,4 +91,4 @@ class TextSplitter:
                 start = end - self.section_overlap
 
         if start + self.section_overlap < end:
-            yield SplitPage(page_num=find_page(start), text=all_text[start:end])
+            yield SplitPage(page_num=find_page(start), text=all_text[start:end],filename=filename)

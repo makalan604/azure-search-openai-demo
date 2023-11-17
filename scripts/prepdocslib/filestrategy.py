@@ -58,7 +58,7 @@ class FileStrategy(Strategy):
                         print(f"Splitting '{file.filename()}' into sections")
                     sections = [
                         Section(split_page, content=file, category=self.category)
-                        for split_page in self.text_splitter.split_pages(pages)
+                        for split_page in self.text_splitter.split_pages(pages,file)
                     ]
                     await search_manager.update_content(sections)
                     await self.blob_manager.upload_blob(file)
